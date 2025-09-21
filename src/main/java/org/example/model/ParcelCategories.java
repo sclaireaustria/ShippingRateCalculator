@@ -5,16 +5,18 @@ package org.example.model;
  * */
 public enum ParcelCategories {
 
-    SMALL(10, 3),
-    MEDIUM(50, 8),
-    LARGE(100, 15),
-    XL(Double.MAX_VALUE, 25);
+    SMALL(10, 1, 3),
+    MEDIUM(50, 3, 8),
+    LARGE(100, 6, 15),
+    XL(Double.MAX_VALUE, 10, 25);
 
     private final double dimensionLimit;
+    private final double weightLimit;
     private final double cost;
 
-    ParcelCategories(double dimensionLimit, double cost) {
+    ParcelCategories(double dimensionLimit, double weightLimit, double cost) {
         this.dimensionLimit = dimensionLimit;
+        this.weightLimit = weightLimit;
         this.cost = cost;
     }
 
@@ -24,6 +26,10 @@ public enum ParcelCategories {
 
     public double getCost() {
         return cost;
+    }
+
+    public double getWeightLimit() {
+        return weightLimit;
     }
 }
 
