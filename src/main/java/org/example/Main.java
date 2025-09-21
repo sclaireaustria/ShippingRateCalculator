@@ -13,6 +13,7 @@ public class Main {
      * */
 
     public static final double OVERWEIGHT_FEE_PER_KG = 2;
+    public static final double HEAVY_OVERWEIGHT_FEE_PER_KG = 1;
 
     public static OrderResult calculateRate(OrderRequest orderRequest) {
 
@@ -34,12 +35,7 @@ public class Main {
             // Get the parcel category
             ParcelCategories category = getParcelCategory(parcel);
 
-            // Check if there are additional fees based on weight
-            double overweightFee = calculateOverweightFee(parcel, category);
-
-            double parcelCost = category.getCost() + overweightFee;
-
-            parcelResult.add(new ParcelResult(parcel, parcelCost, category.name()));
+            double parcelCost = checkBetterRate(parcel, category, parcelResult);
 
             initialCost += parcelCost;
         }
@@ -59,6 +55,25 @@ public class Main {
         return ParcelCategories.XL;
     }
 
+    public static double checkBetterRate(Parcel parcel, ParcelCategories category, List<ParcelResult> parcelResult) {
+        double overweightFee = calculateOverweightFee(parcel, category);
+        double heavyParcelCost = calculateHeavyParcelCost(parcel);
+
+        double parcelCost = category.getCost();
+
+        if (overweightFee > heavyParcelCost) {
+            parcelCost = heavyParcelCost;
+
+            parcelResult.add(new ParcelResult(parcel, parcelCost, ParcelCategories.HEAVY.name()));
+        } else {
+            parcelCost = category.getCost() + overweightFee;
+
+            parcelResult.add(new ParcelResult(parcel, parcelCost, category.name()));
+        }
+
+        return parcelCost;
+    }
+
     public static double calculateOverweightFee(Parcel parcel, ParcelCategories category) {
         double overweightFee = 0;
 
@@ -70,6 +85,17 @@ public class Main {
         return overweightFee;
     }
 
+    public static double calculateHeavyParcelCost(Parcel parcel) {
+        double heavyParcelCost = ParcelCategories.HEAVY.getCost();
+
+        if (parcel.weight() > ParcelCategories.HEAVY.getWeightLimit()) {
+            heavyParcelCost = (parcel.weight() - ParcelCategories.HEAVY.getWeightLimit())
+                    * HEAVY_OVERWEIGHT_FEE_PER_KG;
+        }
+
+        return heavyParcelCost;
+    }
+
     public static double calculateSpeedyShipping(boolean isSpeedyShipping, double initialCost) {
         return isSpeedyShipping ? initialCost : 0;
     }
@@ -77,5 +103,7 @@ public class Main {
     public static double calculateTotalShippingCost(double initialCost, double speedyShippingCost) {
         return initialCost + speedyShippingCost;
     }
+
+
 
 }

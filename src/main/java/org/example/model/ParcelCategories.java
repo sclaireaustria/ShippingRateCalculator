@@ -8,7 +8,8 @@ public enum ParcelCategories {
     SMALL(10, 1, 3),
     MEDIUM(50, 3, 8),
     LARGE(100, 6, 15),
-    XL(Double.MAX_VALUE, 10, 25);
+    XL(Double.MAX_VALUE, 10, 25),
+    HEAVY(Double.MAX_VALUE, 50, 50);
 
     private final double dimensionLimit;
     private final double weightLimit;
