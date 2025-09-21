@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.model.OrderRequest;
 import org.example.model.OrderResult;
 import org.example.model.Parcel;
 import org.example.model.ParcelCategories;
@@ -67,6 +68,7 @@ class MainTest {
 
     @Test
     void testOrderTotalCost() {
+
         List<Parcel> parcels = Arrays.asList(
                 new Parcel(5, 5, 5),
                 new Parcel(20, 20, 20),
@@ -74,9 +76,29 @@ class MainTest {
                 new Parcel(100, 40, 30)
         );
 
-        OrderResult result = Main.calculateRate(parcels);
+        OrderResult result = Main.calculateRate(new OrderRequest(parcels,false));
 
         assertEquals(ALL_SIZES_COST, result.totalShippingCost(), 0.001);
         assertEquals(4, result.parcels().size());
     }
+
+    @Test
+    void testCalculateSpeedyShippingCost_true() {
+        double speedyShippingCost = Main.calculateSpeedyShipping(true, ALL_SIZES_COST);
+        assertEquals(ALL_SIZES_COST, speedyShippingCost, 0.001);
+    }
+
+    @Test
+    void testCalculateSpeedyShippingCost_false() {
+        double speedyShippingCost = Main.calculateSpeedyShipping(false, ALL_SIZES_COST);
+        assertEquals(0, speedyShippingCost, 0.001);
+    }
+
+    @Test
+    void testCalculateTotalShippingCost() {
+
+        double totalCost = Main.calculateTotalShippingCost(ALL_SIZES_COST, ALL_SIZES_COST);
+        assertEquals(ALL_SIZES_COST*2, totalCost, 0.001);
+    }
+
 }
